@@ -15,6 +15,10 @@ jobs:
         with:
           repository: LiBwrt/openwrt-6.x
           path: openwrt
+      - name: 更新软件
+        run: |
+          cd openwrt
+          ./scripts/feeds update -a && ./scripts/feeds install -a
       - name: 克隆配置
         uses: actions/checkout@v4
         with:
@@ -22,10 +26,13 @@ jobs:
       - name: 更新配置
         run: |
           cd openwrt
-          ./scripts/feeds update -a && ./scripts/feeds install -a
           cp ../temp/config ./.config
           make defconfig
       - name: 下载工具
-        run: make download -j$(nproc)
+        run: |
+          cd openwrt
+          make download -j$(nproc)
       - name: 编译固件
-        run: make V=s -j$(nproc)
+        run: |
+          cd openwrt
+          make V=s -j$(nproc)
