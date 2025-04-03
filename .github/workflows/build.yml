@@ -18,9 +18,16 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: temp
-      - name: 更新配置
+      - name: 应用配置
         run: cp ./temp/config ./openwrt/.config && cd openwrt && make defconfig
       - name: 下载工具
         run: cd openwrt && make download -j$(nproc)
       - name: 编译固件
         run: cd openwrt && make V=s -j$(nproc)
+      - name: 上传固件
+        uses: actions/upload-artifact@v4
+        with:
+          name: jdcloud_re-ss-01
+          path: |
+            openwrt/bin/targets/qualcommax/ipq60xx/libwrt-qualcommax-ipq60xx-jdcloud_re-ss-01-squashfs-factory.bin
+            openwrt/bin/targets/qualcommax/ipq60xx/libwrt-qualcommax-ipq60xx-jdcloud_re-ss-01-squashfs-sysupgrade.bin
